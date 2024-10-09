@@ -2,4 +2,5 @@
     <string name="app_name">kt-todo-list</string>
     <string name="heading">Todo List</string>
     <string name="edit">Edit</string>
+    <string name="addTodo">Add Todo</string>
 </resources>
