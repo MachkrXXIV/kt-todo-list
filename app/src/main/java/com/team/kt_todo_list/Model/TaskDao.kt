@@ -13,7 +13,7 @@ interface TaskDao {
 
     @MapInfo(keyColumn = "id")
     @Query("SELECT * FROM task_table ORDER BY title ASC")
-    fun getAlphabetizedWords(): Flow<Map<Int,Task>>
+    fun getAlphabetizedTasks(): Flow<Map<Int,Task>>
 
     @Update
     suspend fun update(task: Task)
