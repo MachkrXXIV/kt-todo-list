@@ -4,13 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.team.kt_todo_list.Converters
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Date
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
 @Database(entities = arrayOf(Task::class), version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 public abstract class TaskRoomDatabase : RoomDatabase() {
 
     abstract fun taskDao(): TaskDao
