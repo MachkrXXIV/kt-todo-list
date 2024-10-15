@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.team.kt_todo_list.Model.Task
 
-class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(TasksComparator()) {
+class TaskListAdapter(
+    val onItemClicked: (id: Int) -> Unit
+) : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(TasksComparator()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         return TaskViewHolder.create(parent)
