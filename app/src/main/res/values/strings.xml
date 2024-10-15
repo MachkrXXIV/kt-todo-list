@@ -4,4 +4,7 @@
     <string name="edit">Edit</string>
     <string name="addTodo">Add Todo</string>
     <string name="defaultTodo">New Todo</string>
+    <string name="etTaskTitleHint">Task Title</string>
+    <string name="etTaskDescriptionHint">Task Description</string>
+    <string name="isComplete">Completed?</string>
 </resources>

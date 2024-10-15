@@ -3,7 +3,6 @@ package com.team.kt_todo_list
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +16,7 @@ import com.team.kt_todo_list.TaskActivity.TaskActivity
 import com.team.kt_todo_list.TaskActivity.TaskViewModel
 import com.team.kt_todo_list.TaskActivity.TaskViewModelFactory
 
-class MainActivity<RecyclerView : View?> : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
     private val LOG_TAG = "MainActivity"
     //ViewModel object to communicate between Activity and repository
     private val taskViewModel: TaskViewModel by viewModels {
