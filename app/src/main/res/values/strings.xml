@@ -3,4 +3,5 @@
     <string name="heading">Todo List</string>
     <string name="edit">Edit</string>
     <string name="addTodo">Add Todo</string>
+    <string name="defaultTodo">New Todo</string>
 </resources>
