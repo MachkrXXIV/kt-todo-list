@@ -10,17 +10,14 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.team.kt_todo_list.TaskActivity.TaskActivity
-import com.team.kt_todo_list.TaskActivity.TaskViewModel
-import com.team.kt_todo_list.TaskActivity.TaskViewModelFactory
 
 class MainActivity : AppCompatActivity() {
     private val LOG_TAG = "MainActivity"
     //ViewModel object to communicate between Activity and repository
-    private val taskViewModel: TaskViewModel by viewModels {
-        TaskViewModelFactory((application as TasksApplication).repository)
+    private val todoListViewModel: TodoListViewModel by viewModels {
+        TodoListViewModelFactory((application as TasksApplication).repository)
     }
 
     /**
@@ -54,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         //Start observing the words list (now map), and pass updates through
         //to the adapter
-        taskViewModel.allWords.observe(this, Observer { tasks ->
+        todoListViewModel.allTasks.observe(this, Observer { tasks ->
             // Update the cached copy of the tasks in the adapter.
             tasks?.let { adapter.submitList(it.values.toList()) }
         })

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">kt-todo-list</string>
     <string name="heading">Todo List</string>
-    <string name="edit">Edit</string>
+    <string name="save">Save</string>
     <string name="addTodo">Add Todo</string>
     <string name="defaultTodo">New Todo</string>
     <string name="etTaskTitleHint">Task Title</string>
