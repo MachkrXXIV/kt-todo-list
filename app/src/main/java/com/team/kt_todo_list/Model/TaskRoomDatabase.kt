@@ -58,7 +58,7 @@ public abstract class TaskRoomDatabase : RoomDatabase() {
             taskDao.deleteAll()
 
             // Add sample words.
-            var task = Task(0,"Title","Description",false, Date())
+            var task = Task(0,"twerk","Description",false, Date())
             taskDao.insert(task)
             task = Task(1,"Silly","Description",false, Date())
             taskDao.insert(task)
