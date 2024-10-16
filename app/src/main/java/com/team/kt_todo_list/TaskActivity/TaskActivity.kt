@@ -26,11 +26,12 @@ class TaskActivity : AppCompatActivity() {
     private lateinit var datePicker: DatePicker
     private lateinit var timePicker: TimePicker
     private lateinit var task: Task
-    val taskViewModel: TaskViewModel by viewModels {
+    private val taskViewModel: TaskViewModel by viewModels {
         TaskViewModelFactory((application as TasksApplication).repository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // TODO: whole thing is null bruh
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_task)
@@ -85,6 +86,13 @@ class TaskActivity : AppCompatActivity() {
                 setResult(Activity.RESULT_OK)
             }
             //End the activity
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "I just added a new task!")
+                type = "text/plain"
+            }
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
             finish()
         }
 

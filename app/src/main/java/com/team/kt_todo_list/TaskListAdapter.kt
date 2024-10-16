@@ -21,17 +21,23 @@ class TaskListAdapter(
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val current = getItem(position)
+        holder.itemView.setOnClickListener {
+            current.id?.let { it1 -> onItemClicked(it1) }
+        }
         holder.bind(current)
     }
 
     class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val LOG_TAG = TaskViewHolder::class.java.simpleName
         private val taskItemView: LinearLayout = itemView.findViewById(R.id.task_item)
         private val taskCheckBox: CheckBox = itemView.findViewById(R.id.task_item_checkbox)
         private val taskTextView: TextView = itemView.findViewById(R.id.task_item_textview)
 
         fun bind(task: Task?) {
-            taskCheckBox.isChecked = task?.isCompleted ?: false
-            taskTextView.text = task?.title ?: "No Title"
+            if (task != null) {
+                taskCheckBox.isChecked = task.isCompleted
+                taskTextView.text = task.title
+            }
         }
 
         companion object {

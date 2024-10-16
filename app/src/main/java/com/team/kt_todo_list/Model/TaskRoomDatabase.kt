@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.team.kt_todo_list.Converters
+import com.team.kt_todo_list.Util.Converters
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -58,7 +58,7 @@ public abstract class TaskRoomDatabase : RoomDatabase() {
             taskDao.deleteAll()
 
             // Add sample words.
-            var task = Task(0,"twerk","Description",false, Date())
+            var task = Task(0,"Study for midterm to not fail","Description",false, Date())
             taskDao.insert(task)
             task = Task(1,"Silly","Description",false, Date())
             taskDao.insert(task)

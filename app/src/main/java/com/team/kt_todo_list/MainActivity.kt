@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     @param id id of the item that is clicked
      */
     fun launchNewTaskActivity(id:Int){
+        Log.d(LOG_TAG, "Launching new task activity with id: $id")
         val secondActivityIntent = Intent(this, TaskActivity::class.java)
         secondActivityIntent.putExtra("EXTRA_ID",id)
         this.startActivity(secondActivityIntent)
@@ -57,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         })
         //Get reference to floating action button
         val fab = findViewById<FloatingActionButton>(R.id.addTodo)
-        //Start the NewWordActivity when it is clicked
+        //Start the TaskActivity when it is clicked
         fab.setOnClickListener {
             Log.d(LOG_TAG, "Add new task")
             val intent = Intent(this@MainActivity, TaskActivity::class.java)
