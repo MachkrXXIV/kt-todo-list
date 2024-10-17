@@ -48,7 +48,9 @@ class MainActivity : AppCompatActivity() {
         val recyclerView =
             findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recyclerView)
         //Create adapter class, passing the launchNewWordActivity callback
-        val adapter = TaskListAdapter(this::launchNewTaskActivity)
+        val adapter = TaskListAdapter(this::launchNewTaskActivity) { task ->
+            todoListViewModel.delete(task)
+        }
         //Set the adapter for the recyclerView to the adapter object
         recyclerView.adapter = adapter
         //Set the recyclerview layout to be a linearLayoutManager with activity context

@@ -16,4 +16,14 @@
         android:layout_height="wrap_content"
         android:text="@string/defaultTodo"/>
 
+    <ImageButton
+        android:id="@+id/task_item_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/baseline_delete_24"
+        android:background="@color/red"
+        android:contentDescription="@string/delete"/>
+
 </LinearLayout>

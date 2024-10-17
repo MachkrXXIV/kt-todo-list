@@ -11,4 +11,5 @@
     <string name="EXTRA_TITLE">EXTRA_TITLE</string>
     <string name="channel_name">Main Activity Notification Channel</string>
     <string name="channel_description">This is the default channel for notifications from the kt-todo-list application</string>
+    <string name="delete">Delete todo</string>
 </resources>
