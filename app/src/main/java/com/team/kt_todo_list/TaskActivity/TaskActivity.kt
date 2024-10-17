@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.DatePicker
@@ -20,6 +21,7 @@ import com.team.kt_todo_list.TasksApplication
 import java.util.Date
 
 class TaskActivity : AppCompatActivity() {
+    private val LOG_TAG = "TaskActivity"
     private lateinit var etTitle: EditText
     private lateinit var etDescription: EditText
     private lateinit var checkbox: CheckBox
@@ -53,12 +55,14 @@ class TaskActivity : AppCompatActivity() {
         } else {
             taskViewModel.start(id)
             taskViewModel.task.observe(this) {
-                task = it
-                etTitle.setText(it.title)
-                etDescription.setText(it.description)
-                datePicker.updateDate(it.dueDate.year, it.dueDate.month, it.dueDate.day)
-                timePicker.hour = it.dueDate.hours
-                timePicker.minute = it.dueDate.minutes
+                if (it != null) {
+                    task = it
+                    etTitle.setText(it.title)
+                    etDescription.setText(it.description)
+                    datePicker.updateDate(it.dueDate.year, it.dueDate.month, it.dueDate.day)
+                    timePicker.hour = it.dueDate.hours
+                    timePicker.minute = it.dueDate.minutes
+                }
             }
         }
 
@@ -76,10 +80,17 @@ class TaskActivity : AppCompatActivity() {
                 val title = etTitle.text.toString()
                 val description = etDescription.text.toString()
                 val isCompleted = checkbox.isChecked
-                val dueDate = Date(datePicker.year, datePicker.month, datePicker.dayOfMonth, timePicker.hour, timePicker.minute)
-                if(taskViewModel.task.value?.id == null){
-                    taskViewModel.insert(Task(null,title, description, isCompleted, dueDate))
-                }else{
+                val dueDate = Date(
+                    datePicker.year,
+                    datePicker.month,
+                    datePicker.dayOfMonth,
+                    timePicker.hour,
+                    timePicker.minute
+                )
+                if (taskViewModel.task.value?.id == null) {
+                    taskViewModel.insert(Task(null, title, description, isCompleted, dueDate))
+                } else {
+                    Log.d(LOG_TAG, "Updating task")
                     taskViewModel.task.value?.let { it1 -> taskViewModel.update(it1) }
                 }
                 //replyIntent.putExtra(EXTRA_REPLY, word)

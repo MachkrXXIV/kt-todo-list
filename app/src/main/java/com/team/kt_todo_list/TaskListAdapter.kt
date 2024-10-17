@@ -1,5 +1,6 @@
 package com.team.kt_todo_list
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,13 +15,14 @@ import com.team.kt_todo_list.Model.Task
 class TaskListAdapter(
     val onItemClicked: (id: Int) -> Unit
 ) : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(TasksComparator()) {
-
+    private val LOG_TAG = TaskListAdapter::class.java.simpleName
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         return TaskViewHolder.create(parent)
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val current = getItem(position)
+        Log.d(LOG_TAG, "Binding item $current")
         holder.itemView.setOnClickListener {
             current.id?.let { it1 -> onItemClicked(it1) }
         }
