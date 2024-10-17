@@ -29,7 +29,10 @@ import com.team.kt_todo_list.R
 import com.team.kt_todo_list.TasksApplication
 import com.team.kt_todo_list.Util.AlarmReceiver
 import com.team.kt_todo_list.Util.NotificationUtil
+import java.time.LocalDateTime
 import java.util.Date
+import java.time.LocalTime
+import java.time.ZoneId
 
 class TaskActivity : AppCompatActivity() {
     private val LOG_TAG = "TaskActivity"
@@ -78,7 +81,11 @@ class TaskActivity : AppCompatActivity() {
         checkbox.isChecked = intent.getBooleanExtra("EXTRA_IS_CHECKED", false)
 
         if (id == -1) {
-            task = Task(null, "", "", false, Date())
+            val currentDateTime = LocalDateTime.now()
+            task = Task(null, "", "", false, currentDateTime)
+            datePicker.updateDate(currentDateTime.year, currentDateTime.monthValue, currentDateTime.dayOfMonth)
+            timePicker.hour = currentDateTime.hour
+            timePicker.minute = currentDateTime.minute
         } else {
             taskViewModel.start(id)
             taskViewModel.task.observe(this) {
@@ -87,9 +94,9 @@ class TaskActivity : AppCompatActivity() {
                     etTitle.setText(it.title)
                     etDescription.setText(it.description)
                     checkbox.isChecked = it.isCompleted
-                    datePicker.updateDate(it.dueDate.year, it.dueDate.month, it.dueDate.day)
-                    timePicker.hour = it.dueDate.hours
-                    timePicker.minute = it.dueDate.minutes
+                    datePicker.updateDate(it.dueDate.year, it.dueDate.monthValue, it.dueDate.dayOfMonth)
+                    timePicker.hour = it.dueDate.hour
+                    timePicker.minute = it.dueDate.minute
                 }
             }
         }
@@ -108,9 +115,9 @@ class TaskActivity : AppCompatActivity() {
                 val title = etTitle.text.toString()
                 val description = etDescription.text.toString()
                 val isCompleted = checkbox.isChecked
-                val dueDate = Date(
+                val dueDate = LocalDateTime.of(
                     datePicker.year,
-                    datePicker.month,
+                    datePicker.month + 1,
                     datePicker.dayOfMonth,
                     timePicker.hour,
                     timePicker.minute
@@ -179,6 +186,7 @@ class TaskActivity : AppCompatActivity() {
             putExtra("EXTRA_TASK_TITLE", task.title)
         }
         val pendingAlarmIntent = PendingIntent.getBroadcast(this.applicationContext, task.id!!, alarmIntent, PendingIntent.FLAG_IMMUTABLE)
-        alarmManager.setWindow(AlarmManager.RTC_WAKEUP, task.dueDate.time, 1000 * 5, pendingAlarmIntent)
+        val triggerTime = task.dueDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        alarmManager.setWindow(AlarmManager.RTC_WAKEUP, triggerTime, 1000 * 5, pendingAlarmIntent)
     }
 }

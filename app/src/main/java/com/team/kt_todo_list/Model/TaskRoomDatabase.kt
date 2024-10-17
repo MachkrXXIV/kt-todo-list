@@ -9,6 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.team.kt_todo_list.Util.Converters
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import java.util.Date
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
@@ -58,9 +59,9 @@ public abstract class TaskRoomDatabase : RoomDatabase() {
             taskDao.deleteAll()
 
             // Add sample words.
-            var task = Task(0,"Study for midterm to not fail","Description",false, Date())
+            var task = Task(0,"Study for midterm to not fail","Description",false, LocalDateTime.now())
             taskDao.insert(task)
-            task = Task(1,"Silly","Description",false, Date())
+            task = Task(1,"Silly","Description",false, LocalDateTime.now())
             taskDao.insert(task)
         }
     }
