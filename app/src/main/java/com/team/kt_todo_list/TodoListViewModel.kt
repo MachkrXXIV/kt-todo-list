@@ -27,6 +27,10 @@ class TodoListViewModel(private val repository: TaskRepository) : ViewModel() {
     fun delete(task: Task) = viewModelScope.launch {
         repository.delete(task)
     }
+
+    fun update(task: Task) = viewModelScope.launch {
+        repository.update(task)
+    }
 }
 
 class TodoListViewModelFactory(private val repository: TaskRepository) : ViewModelProvider.Factory {

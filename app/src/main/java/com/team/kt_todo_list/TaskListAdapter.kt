@@ -17,12 +17,13 @@ import kotlin.reflect.KFunction2
 
 class TaskListAdapter(
     val onItemClicked: KFunction2<Int?, Boolean, Unit>,
-    val onItemDeleted: (Task) -> Unit
+    val onItemDeleted: (Task) -> Unit,
+    val onItemChecked: (Task, Boolean) -> Unit
 ) : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(TasksComparator()) {
     private val LOG_TAG = TaskListAdapter::class.java.simpleName
-    
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        return TaskViewHolder.create(parent, onItemDeleted)
+        return TaskViewHolder.create(parent, onItemDeleted, onItemChecked)
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
@@ -34,7 +35,7 @@ class TaskListAdapter(
         holder.bind(current)
     }
 
-    class TaskViewHolder(itemView: View, val onItemDeleted: (Task) -> Unit) : RecyclerView.ViewHolder(itemView) {
+    class TaskViewHolder(itemView: View, val onItemDeleted: (Task) -> Unit, val onItemChecked: (Task, Boolean) -> Unit) : RecyclerView.ViewHolder(itemView) {
         private val LOG_TAG = TaskViewHolder::class.java.simpleName
         private val taskItemView: LinearLayout = itemView.findViewById(R.id.task_item)
         private val taskCheckBox: CheckBox = itemView.findViewById(R.id.task_item_checkbox)
@@ -46,6 +47,7 @@ class TaskListAdapter(
                 Log.d(LOG_TAG, "Binding task in List Adapter: $task")
                 taskCheckBox.isChecked = task.isCompleted
                 taskTextView.text = task.title
+                taskCheckBox.setOnCheckedChangeListener { _, isChecked -> onItemChecked(task, isChecked) }
                 taskDeleteBtn.setOnClickListener {
                     onItemDeleted(task)
                 }
@@ -53,10 +55,10 @@ class TaskListAdapter(
         }
 
         companion object {
-            fun create(parent: ViewGroup, onItemDeleted: (Task) -> Unit): TaskViewHolder {
+            fun create(parent: ViewGroup, onItemDeleted: (Task) -> Unit, onItemChecked: (Task, Boolean) -> Unit): TaskViewHolder {
                 val view: View = LayoutInflater.from(parent.context)
                     .inflate(R.layout.recyclerview_item, parent, false)
-                return TaskViewHolder(view, onItemDeleted)
+                return TaskViewHolder(view, onItemDeleted, onItemChecked)
             }
         }
     }
