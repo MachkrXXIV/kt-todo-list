@@ -8,6 +8,7 @@
     <string name="etTaskDescriptionHint">Task Description</string>
     <string name="isComplete">Completed?</string>
     <string name="EXTRA_ID">EXTRA_ID</string>
+    <string name="EXTRA_TITLE">EXTRA_TITLE</string>
     <string name="channel_name">Main Activity Notification Channel</string>
     <string name="channel_description">This is the default channel for notifications from the kt-todo-list application</string>
 </resources>

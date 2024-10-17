@@ -1,7 +1,13 @@
 package com.team.kt_todo_list.TaskActivity
 
+import android.Manifest
 import android.app.Activity
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -10,14 +16,19 @@ import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.TimePicker
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.team.kt_todo_list.Model.Task
 import com.team.kt_todo_list.R
 import com.team.kt_todo_list.TasksApplication
+import com.team.kt_todo_list.Util.AlarmReceiver
+import com.team.kt_todo_list.Util.NotificationUtil
 import java.util.Date
 
 class TaskActivity : AppCompatActivity() {
@@ -31,9 +42,22 @@ class TaskActivity : AppCompatActivity() {
     private val taskViewModel: TaskViewModel by viewModels {
         TaskViewModelFactory((application as TasksApplication).repository)
     }
+    val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                NotificationUtil().createNotificationChannel(this)
+                scheduleNotification(task)
+            } else {
+                Toast.makeText(this,
+                    "Unable to schedule notification",
+                    Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // TODO: whole thing is null bruh
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_task)
@@ -50,6 +74,9 @@ class TaskActivity : AppCompatActivity() {
         timePicker = findViewById(R.id.task_due_time)
 
         val id = intent.getIntExtra("EXTRA_ID", -1)
+        Log.d(LOG_TAG, "Received intent id: $id and isChecked: ${intent.getBooleanExtra("EXTRA_IS_CHECKED", false)}")
+        checkbox.isChecked = intent.getBooleanExtra("EXTRA_IS_CHECKED", false)
+
         if (id == -1) {
             task = Task(null, "", "", false, Date())
         } else {
@@ -59,6 +86,7 @@ class TaskActivity : AppCompatActivity() {
                     task = it
                     etTitle.setText(it.title)
                     etDescription.setText(it.description)
+                    checkbox.isChecked = it.isCompleted
                     datePicker.updateDate(it.dueDate.year, it.dueDate.month, it.dueDate.day)
                     timePicker.hour = it.dueDate.hours
                     timePicker.minute = it.dueDate.minutes
@@ -90,8 +118,19 @@ class TaskActivity : AppCompatActivity() {
                 if (taskViewModel.task.value?.id == null) {
                     taskViewModel.insert(Task(null, title, description, isCompleted, dueDate))
                 } else {
-                    Log.d(LOG_TAG, "Updating task")
-                    taskViewModel.task.value?.let { it1 -> taskViewModel.update(it1) }
+                    taskViewModel.task.value?.let { it1 ->
+                        Log.d(LOG_TAG, "Updating task $it1")
+                        taskViewModel.update(
+                            Task(
+                                it1.id,
+                                title,
+                                description,
+                                isCompleted,
+                                dueDate
+                            )
+                        )
+
+                    }
                 }
                 //replyIntent.putExtra(EXTRA_REPLY, word)
                 setResult(Activity.RESULT_OK)
@@ -104,9 +143,42 @@ class TaskActivity : AppCompatActivity() {
             }
             val shareIntent = Intent.createChooser(sendIntent, null)
             startActivity(shareIntent)
+            if (checkNotificationPrivilege()) {
+                Log.d(LOG_TAG, "Checking Notis privileges")
+                scheduleNotification(task)
+            }
             finish()
         }
 
 //        val deleteBtn
+    }
+
+    private fun checkNotificationPrivilege(): Boolean {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS,
+
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            NotificationUtil().createNotificationChannel(this)
+            return true
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                return false
+            }
+            return true
+        }
+    }
+
+    private fun scheduleNotification(task: Task) {
+        Log.d(LOG_TAG, "Scheduling notification for task: $task")
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmIntent = Intent(this, AlarmReceiver::class.java).apply {
+            putExtra("EXTRA_TASK_ID", task.id)
+            putExtra("EXTRA_TASK_TITLE", task.title)
+        }
+        val pendingAlarmIntent = PendingIntent.getBroadcast(this.applicationContext, task.id!!, alarmIntent, PendingIntent.FLAG_IMMUTABLE)
+        alarmManager.setWindow(AlarmManager.RTC_WAKEUP, task.dueDate.time, 1000 * 5, pendingAlarmIntent)
     }
 }

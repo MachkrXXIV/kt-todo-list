@@ -11,9 +11,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.team.kt_todo_list.Model.Task
+import kotlin.reflect.KFunction2
 
 class TaskListAdapter(
-    val onItemClicked: (id: Int) -> Unit
+    val onItemClicked: KFunction2<Int?, Boolean, Unit>
 ) : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(TasksComparator()) {
     private val LOG_TAG = TaskListAdapter::class.java.simpleName
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
@@ -24,7 +25,7 @@ class TaskListAdapter(
         val current = getItem(position)
         Log.d(LOG_TAG, "Binding item $current")
         holder.itemView.setOnClickListener {
-            current.id?.let { it1 -> onItemClicked(it1) }
+            current?.let { it1 -> onItemClicked(it1.id, it1.isCompleted) }
         }
         holder.bind(current)
     }

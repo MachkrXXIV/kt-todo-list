@@ -15,6 +15,7 @@ import com.team.kt_todo_list.TaskActivity.TaskActivity
 
 class MainActivity : AppCompatActivity() {
     private val LOG_TAG = "MainActivity"
+
     //ViewModel object to communicate between Activity and repository
     private val todoListViewModel: TodoListViewModel by viewModels {
         TodoListViewModelFactory((application as TasksApplication).repository)
@@ -25,10 +26,11 @@ class MainActivity : AppCompatActivity() {
     A new activity based on id
     @param id id of the item that is clicked
      */
-    fun launchNewTaskActivity(id:Int){
-        Log.d(LOG_TAG, "Launching new task activity with id: $id")
+    fun launchNewTaskActivity(id: Int?, isChecked: Boolean) {
+        Log.d(LOG_TAG, "Launching new task activity with id: $id and checkState: $isChecked")
         val secondActivityIntent = Intent(this, TaskActivity::class.java)
-        secondActivityIntent.putExtra("EXTRA_ID",id)
+        secondActivityIntent.putExtra("EXTRA_ID", id)
+        secondActivityIntent.putExtra("EXTRA_IS_CHECKED", isChecked)
         this.startActivity(secondActivityIntent)
     }
 
@@ -43,7 +45,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         //Get reference to recyclerView object
-        val recyclerView = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recyclerView)
+        val recyclerView =
+            findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recyclerView)
         //Create adapter class, passing the launchNewWordActivity callback
         val adapter = TaskListAdapter(this::launchNewTaskActivity)
         //Set the adapter for the recyclerView to the adapter object
