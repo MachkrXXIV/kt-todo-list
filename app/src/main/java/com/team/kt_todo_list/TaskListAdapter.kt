@@ -38,6 +38,7 @@ class TaskListAdapter(
 
         fun bind(task: Task?) {
             if (task != null) {
+                Log.d(LOG_TAG, "Binding task in List Adapter: $task")
                 taskCheckBox.isChecked = task.isCompleted
                 taskTextView.text = task.title
             }

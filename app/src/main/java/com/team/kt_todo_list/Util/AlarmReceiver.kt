@@ -12,14 +12,15 @@ class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
-        val taskId = intent.getIntExtra(context.getString(R.string.EXTRA_ID), 0)
+        val taskId = intent.getIntExtra(context.getString(R.string.EXTRA_ID), -1)
         val taskTitle = intent.getStringExtra(context.getString(R.string.EXTRA_TITLE))
-        Log.d(LOG_TAG, taskId.toString())
+        Log.d(LOG_TAG, "Alarm fired for task: $taskId with title: $taskTitle")
         val clickIntent = Intent(context, MainActivity::class.java)
         clickIntent.putExtra(context.getString(R.string.EXTRA_ID), taskId)
+        clickIntent.putExtra(context.getString(R.string.EXTRA_TITLE), taskTitle)
         NotificationUtil().createClickableNotification(
             context,
-            "Title",
+            "$taskTitle",
             "$taskId fired",
             clickIntent,
             taskId

@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface TaskDao {
 
     @MapInfo(keyColumn = "id")
-    @Query("SELECT * FROM task_table ORDER BY title ASC")
+    @Query("SELECT * FROM task_table ORDER BY id ASC")
     fun getAlphabetizedTasks(): Flow<Map<Int,Task>>
 
     @Update

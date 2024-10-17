@@ -117,7 +117,7 @@ class TaskActivity : AppCompatActivity() {
                 val isCompleted = checkbox.isChecked
                 val dueDate = LocalDateTime.of(
                     datePicker.year,
-                    datePicker.month + 1,
+                    datePicker.month,
                     datePicker.dayOfMonth,
                     timePicker.hour,
                     timePicker.minute
@@ -180,13 +180,17 @@ class TaskActivity : AppCompatActivity() {
 
     private fun scheduleNotification(task: Task) {
         Log.d(LOG_TAG, "Scheduling notification for task: $task")
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val alarmIntent = Intent(this, AlarmReceiver::class.java).apply {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+        val alarmIntent = Intent(this.applicationContext, AlarmReceiver::class.java).apply {
             putExtra("EXTRA_TASK_ID", task.id)
             putExtra("EXTRA_TASK_TITLE", task.title)
         }
-        val pendingAlarmIntent = PendingIntent.getBroadcast(this.applicationContext, task.id!!, alarmIntent, PendingIntent.FLAG_IMMUTABLE)
-        val triggerTime = task.dueDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-        alarmManager.setWindow(AlarmManager.RTC_WAKEUP, triggerTime, 1000 * 5, pendingAlarmIntent)
+        task.id?.let {
+            Log.d(LOG_TAG, "Setting alarm for taskId: $it")
+            val pendingAlarmIntent = PendingIntent.getBroadcast(this.applicationContext, task.id, alarmIntent, PendingIntent.FLAG_IMMUTABLE)
+            val triggerTime = task.dueDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            Log.d(LOG_TAG, "Trigger time: $triggerTime due date: ${task.dueDate}")
+            alarmManager?.setWindow(AlarmManager.RTC_WAKEUP, triggerTime, 1000 * 5, pendingAlarmIntent)
+        }
     }
 }
