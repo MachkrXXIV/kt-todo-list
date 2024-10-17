@@ -20,8 +20,8 @@ class AlarmReceiver : BroadcastReceiver() {
         clickIntent.putExtra(context.getString(R.string.EXTRA_TITLE), taskTitle)
         NotificationUtil().createClickableNotification(
             context,
-            "$taskTitle",
-            "$taskId fired",
+            "$taskTitle is due",
+            "Don't forget to complete this task!",
             clickIntent,
             taskId
         )

@@ -11,6 +11,7 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.team.kt_todo_list.MainActivity
 import com.team.kt_todo_list.R
 
 class NotificationUtil {
@@ -41,7 +42,7 @@ class NotificationUtil {
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setContentTitle(title)
             .setContentText(content)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingClickIntent)
             .setAutoCancel(true)
 

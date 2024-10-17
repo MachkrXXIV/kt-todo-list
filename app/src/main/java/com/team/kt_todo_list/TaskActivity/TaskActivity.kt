@@ -30,8 +30,6 @@ import com.team.kt_todo_list.TasksApplication
 import com.team.kt_todo_list.Util.AlarmReceiver
 import com.team.kt_todo_list.Util.NotificationUtil
 import java.time.LocalDateTime
-import java.util.Date
-import java.time.LocalTime
 import java.time.ZoneId
 
 class TaskActivity : AppCompatActivity() {
@@ -53,9 +51,11 @@ class TaskActivity : AppCompatActivity() {
                 NotificationUtil().createNotificationChannel(this)
                 scheduleNotification(task)
             } else {
-                Toast.makeText(this,
+                Toast.makeText(
+                    this,
                     "Unable to schedule notification",
-                    Toast.LENGTH_SHORT)
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
         }
@@ -77,13 +77,25 @@ class TaskActivity : AppCompatActivity() {
         timePicker = findViewById(R.id.task_due_time)
 
         val id = intent.getIntExtra("EXTRA_ID", -1)
-        Log.d(LOG_TAG, "Received intent id: $id and isChecked: ${intent.getBooleanExtra("EXTRA_IS_CHECKED", false)}")
+        Log.d(
+            LOG_TAG,
+            "Received intent id: $id and isChecked: ${
+                intent.getBooleanExtra(
+                    "EXTRA_IS_CHECKED",
+                    false
+                )
+            }"
+        )
         checkbox.isChecked = intent.getBooleanExtra("EXTRA_IS_CHECKED", false)
 
         if (id == -1) {
             val currentDateTime = LocalDateTime.now()
             task = Task(null, "", "", false, currentDateTime)
-            datePicker.updateDate(currentDateTime.year, currentDateTime.monthValue, currentDateTime.dayOfMonth)
+            datePicker.updateDate(
+                currentDateTime.year,
+                currentDateTime.monthValue,
+                currentDateTime.dayOfMonth
+            )
             timePicker.hour = currentDateTime.hour
             timePicker.minute = currentDateTime.minute
         } else {
@@ -94,7 +106,11 @@ class TaskActivity : AppCompatActivity() {
                     etTitle.setText(it.title)
                     etDescription.setText(it.description)
                     checkbox.isChecked = it.isCompleted
-                    datePicker.updateDate(it.dueDate.year, it.dueDate.monthValue, it.dueDate.dayOfMonth)
+                    datePicker.updateDate(
+                        it.dueDate.year,
+                        it.dueDate.monthValue,
+                        it.dueDate.dayOfMonth
+                    )
                     timePicker.hour = it.dueDate.hour
                     timePicker.minute = it.dueDate.minute
                 }
@@ -139,7 +155,6 @@ class TaskActivity : AppCompatActivity() {
 
                     }
                 }
-                //replyIntent.putExtra(EXTRA_REPLY, word)
                 setResult(Activity.RESULT_OK)
             }
             //End the activity
@@ -165,7 +180,7 @@ class TaskActivity : AppCompatActivity() {
                 this,
                 Manifest.permission.POST_NOTIFICATIONS,
 
-            ) == PackageManager.PERMISSION_GRANTED
+                ) == PackageManager.PERMISSION_GRANTED
         ) {
             NotificationUtil().createNotificationChannel(this)
             return true
@@ -181,16 +196,26 @@ class TaskActivity : AppCompatActivity() {
     private fun scheduleNotification(task: Task) {
         Log.d(LOG_TAG, "Scheduling notification for task: $task")
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-        val alarmIntent = Intent(this.applicationContext, AlarmReceiver::class.java).apply {
-            putExtra("EXTRA_TASK_ID", task.id)
-            putExtra("EXTRA_TASK_TITLE", task.title)
-        }
+        val alarmIntent = Intent(this.applicationContext, AlarmReceiver::class.java)
+        alarmIntent.putExtra("EXTRA_ID", task.id)
+        alarmIntent.putExtra("EXTRA_TITLE", task.title)
+
         task.id?.let {
             Log.d(LOG_TAG, "Setting alarm for taskId: $it")
-            val pendingAlarmIntent = PendingIntent.getBroadcast(this.applicationContext, task.id, alarmIntent, PendingIntent.FLAG_IMMUTABLE)
+            val pendingAlarmIntent = PendingIntent.getBroadcast(
+                this.applicationContext,
+                task.id,
+                alarmIntent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
             val triggerTime = task.dueDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
             Log.d(LOG_TAG, "Trigger time: $triggerTime due date: ${task.dueDate}")
-            alarmManager?.setWindow(AlarmManager.RTC_WAKEUP, triggerTime, 1000 * 5, pendingAlarmIntent)
+            alarmManager?.setWindow(
+                AlarmManager.RTC_WAKEUP,
+                triggerTime,
+                1000 * 5,
+                pendingAlarmIntent
+            )
         }
     }
 }
